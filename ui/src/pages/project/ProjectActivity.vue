@@ -1,0 +1,132 @@
+<template>
+  <div class="rounded-2xl bg-container p-6 dark:bg-containerDark">
+    <h2 class="mb-4">Project Activity Log</h2>
+
+    <div v-if="activities.length > 0" class="">
+      <div
+        v-for="activity in activities"
+        :key="activity.id"
+        class="grid h-16 grid-cols-12 items-center gap-2 border-b border-slate-200 dark:border-slate-700 p-3 text-center last:border-b-0"
+      >
+        <div class="col-span-2">
+          {{ formatDate(activity.timestamp) }}
+        </div>
+        <div class="col-span-2">{{ activity.actor_name }}</div>
+        <div class="">{{ activity.action }}</div>
+        <div
+          v-if="activity.item_type === 'Task'"
+          class="cursor-pointer underline"
+          @click="goToTask(activity.task_id)"
+        >
+          {{ activity.item_type }}
+        </div>
+        <div v-else class="">
+          {{ activity.item_type }}
+        </div>
+        <div class="col-span-2 capitalize">{{ formatFieldChanged(activity.field_changed) }}</div>
+        <div class="col-span-4 flex items-center gap-2">
+          <div
+            class="w-56 truncate flex justify-center items-center"
+            :class="activity.field_changed?.startsWith('description') ? 'justify-start' : ''"
+          >
+            <div
+              :class="
+                activity.field_changed === 'status'
+                  ? getStatusClass(activity.old_value)
+                  : activity.field_changed === 'priority'
+                    ? getPriorityClass(activity.old_value)
+                    : ''
+              "
+            >
+              {{ activity.old_value }}
+            </div>
+          </div>
+          <div v-if="activity.action !== 'created'" class="flex justify-center">
+            <ChevronRightIcon class="size-6" />
+          </div>
+          <div class="w-56 truncate flex justify-center items-center">
+            <div
+              :class="
+                activity.field_changed === 'status'
+                  ? getStatusClass(activity.new_value)
+                  : activity.field_changed === 'priority'
+                    ? getPriorityClass(activity.new_value)
+                    : ''
+              "
+            >
+              {{ activity.new_value }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div v-else class="text-slate-600 dark:text-slate-300">No activity yet for this project.</div>
+  </div>
+</template>
+
+<script setup>
+import { useRouter } from 'vue-router'
+import { ChevronRightIcon } from '@heroicons/vue/24/solid'
+import { formatDate } from '@/utils/dateUtils'
+
+const props = defineProps({
+  activities: {
+    type: Array,
+    required: true,
+  },
+})
+
+const router = useRouter()
+
+function goToTask(taskId) {
+  router.push({ name: 'task-home', query: { id: taskId } })
+}
+
+function getStatusClass(status) {
+  switch (status) {
+    case 'To Do':
+      return 'bg-blue-500 px-4 py-2 text-sm w-fit text-onDarkBackground text-center rounded-full'
+    case 'In Progress':
+      return 'bg-orange-500 px-4 py-2 text-sm w-fit text-onDarkBackground text-center rounded-full'
+    case 'Completed':
+      return 'bg-green-500 px-4 py-2 text-sm w-fit text-onDarkBackground text-center rounded-full'
+    case 'On Hold':
+      return 'bg-yellow-500 px-4 py-2 text-sm w-fit text-onDarkBackground text-center rounded-full'
+    default:
+      return ''
+  }
+}
+
+function getPriorityClass(priority) {
+  switch (priority.toLowerCase()) {
+    case 'critical':
+      return 'bg-[#f87171] px-4 py-2 text-sm w-fit text-onDarkBackground text-center rounded-full'
+    case 'high':
+      return 'bg-[#fb923c] px-4 py-2 text-sm w-fit text-onDarkBackground text-center rounded-full'
+    case 'medium':
+      return 'bg-[#facc15] px-4 py-2 text-sm w-fit text-onDarkBackground text-center rounded-full'
+    case 'low':
+      return 'bg-[#22c55e] px-4 py-2 text-sm w-fit text-onDarkBackground text-center rounded-full'
+    default:
+      return ''
+  }
+}
+
+function formatFieldChanged(field) {
+  if (!field) return ''
+  const descMatch = field.match(/^description\[(\d+)\]$/)
+  if (descMatch) {
+    const idx = parseInt(descMatch[1], 10)
+    let suffix = 'th'
+    if (idx === 0) suffix = 'st'
+    else if (idx === 1) suffix = 'nd'
+    else if (idx === 2) suffix = 'rd'
+    return `Description ${idx + 1}${suffix} line`
+  }
+  return field
+    .split('_')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ')
+}
+</script>

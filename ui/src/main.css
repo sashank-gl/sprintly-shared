@@ -1,0 +1,45 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-inter: 'Inter', 'sans-serif';
+  --color-primary: #6366f1;
+  --color-primaryDark: #4f46e5;
+  --color-background: #f1f5f9;
+  --color-darkBackground: #020617;
+  --color-onBackground: #020617;
+  --color-onDarkBackground: #f8fafc;
+  --color-container: #ffffff;
+  --color-containerDark: #0f172a;
+  --color-modal: #f1f5f9;
+  --color-modalDark: #020617;
+  --color-button: #6366f1;
+  --color-buttonDark: #4f46e5;
+  --color-buttonHover: #4f46e5;
+  --color-buttonHoverDark: #6366f1;
+  --spacing-h-88: 22rem;
+  --spacing-w-88: 22rem;
+  --animate-spin-slow: spin-slow 3s linear infinite;
+
+  @keyframes spin-slow {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}
+
+@layer components {
+  h1 {
+    @apply text-3xl font-bold tracking-tight;
+  }
+  h2 {
+    @apply text-2xl font-semibold tracking-tight;
+  }
+  h3 {
+    @apply text-xl font-semibold;
+  }
+  h4 {
+    @apply text-lg font-medium;
+  }
+}
