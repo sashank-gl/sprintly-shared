@@ -2,7 +2,7 @@
 
 > **Note:** This is a public copy of my original project. I lost motivation to continue developing it, but I thought it might be helpful to others, either to learn from the codebase, understand the architecture, or even continue building on it.
 
-I've also recorded a short walkthrough video demonstrating how to use and set it up. You can check it out if you prefer a visual guide!
+I've also recorded a walkthrough video demonstrating how to use and set it up. You can check it out if you prefer a visual guide! Here's the link: _https://youtu.be/O6KJRM8vig4_
 
 ---
 
